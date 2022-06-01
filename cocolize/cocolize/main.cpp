@@ -14,6 +14,8 @@
 #include <filesystem>
 #include <sys/stat.h>
 #include <chrono>
+#include <ctime>
+
 #include "tinyxml.h"
 
 int verbose = 0;
@@ -54,7 +56,7 @@ std::string extractLanguage(std::__fs::filesystem::path pathobj)
 }
 
 
-bool convertFile( const char* inFile, const char* outFile)
+bool convertFile( const char* inFile, const char* outFile, const char* lang)
 {
     if( inFile == NULL || outFile == NULL )
     {
@@ -63,6 +65,12 @@ bool convertFile( const char* inFile, const char* outFile)
             printf("ERROR: inFile == NULL or outFile == NULL \n");
         }
         return false;
+    }
+    
+    char* currlang = "Not_set/0";
+    if(lang != NULL)
+    {
+        currlang = (char*)lang;
     }
     
     TiXmlDocument XMLdoc(inFile);
@@ -85,6 +93,17 @@ bool convertFile( const char* inFile, const char* outFile)
                 }
                 return false;
             }
+            
+            auto end = std::chrono::system_clock::now();
+            std::time_t time = std::chrono::system_clock::to_time_t(end);
+            
+            outFileStream << "// Localizable.strings converted from android XML\n";
+            outFileStream << "// \n";
+            outFileStream << "// At: " << std::ctime(&time);
+            outFileStream << "// Lang: " << currlang << "\n";
+            outFileStream << "// \n";
+            outFileStream << "// By Tarasus\n\n\n";
+
             TiXmlElement* pString = pRoot->FirstChildElement("string");
             
             while (pString) {
@@ -132,13 +151,13 @@ bool convertFile( const char* inFile, const char* outFile)
     return true;
 }
 
-bool convertFile( std::string in, std::string out)
+bool convertFile_str( std::string in, std::string out, std::string lang)
 {
     if(verbose)
     {
-        printf("convertFile: [%s] -> [%s] \n",in.c_str(), out.c_str());
+        printf("convertFile: [%s] [%s] -> [%s] \n",lang.c_str(), in.c_str(), out.c_str() );
     }
-    return convertFile(in.c_str(), out.c_str());
+    return convertFile(in.c_str(), out.c_str(), lang.c_str());
 }
 
 bool dirRoutine(const char* inDirPath, const char* outDirPath)
@@ -155,6 +174,7 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
         outPathMain = std::string(outDirPath);
     }
     
+    std::__fs::filesystem::remove_all(outPathMain.c_str());
     int dir = mkdir(outPathMain.c_str(), 0777);
     
     if(dir == -1 && errno != EEXIST)
@@ -219,14 +239,22 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
                 lang = filename;
             }
             
-            if(lang == "iw") {lang = "he";}
-            if(lang == "zh-rCN") {lang = "zh-Hans";}
-            if(lang == "zh-rTW") {lang = "zh-Hant";}
+            std::string srclang = lang;
+            
+            if(lang == "iw")        {lang = "he";}
+            if(lang == "zh-rCN")    {lang = "zh-Hans";}
+            if(lang == "zh-rTW")    {lang = "zh-Hant";}
             if(lang == "b+sr+Cyrl") {lang = "sr";}
             if(lang == "b+sr+Latn") {lang = "sr-Latn";}
-            if(lang == "pt") {lang = "pt-PT";}
-            if(lang == "in") {lang = "id";}
+            if(lang == "pt")        {lang = "pt-PT";}
+            if(lang == "in")        {lang = "id";}
 
+            
+            if(lang == "en" || lang == "ru")
+            {
+                printf("Ignoring %s file to keep manual converted one",lang.c_str());
+                continue;
+            }
             
             
             std::string projpath = outPathMain + "/" + lang + ".lproj/";
@@ -240,8 +268,11 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
                 }
                 continue;
             }
-        
-            bool res = convertFile(path, projpath + "Localizable.strings" );
+            if(srclang != lang)
+            {
+                lang = srclang + " -> " + lang;
+            }
+            bool res = convertFile_str(path, projpath + "Localizable.strings" , lang);
             if(res)
             {
                 successconverts++;
@@ -321,7 +352,7 @@ int main(int argc, const char * argv[])
     {
         const char* inFilePath  = argv[1+verbose];
         const char* outFilePath = argv[2+verbose];
-        if(!convertFile(inFilePath, outFilePath))
+        if(!convertFile(inFilePath, outFilePath, NULL))
         {
             printf("File conversion failed, try -v or --verbose\n");
         }
