@@ -5,6 +5,7 @@
 //  Created by MacBook Pro on 31/07/12.
 //  Copyright (c) 2012 Tall Developments. All rights reserved.
 //
+//  Edit by Tarasus 01.06.2021
 
 #include <iostream>
 #include <fstream>
@@ -68,7 +69,7 @@ bool convertFile( const char* inFile, const char* outFile)
     if( loadOkay ) {
         if(verbose)
         {
-        printf("Successfully loaded file: [%s]\n", inFile);
+            printf("Successfully loaded file: [%s]\n", inFile);
         }
         TiXmlElement* pRoot = XMLdoc.FirstChildElement("resources");
         if( pRoot ) {
@@ -141,7 +142,6 @@ bool convertFile( std::string in, std::string out)
 
 bool dirRoutine(const char* inDirPath, const char* outDirPath)
 {
-
     std::string outPathMain;
     
     if(outDirPath == NULL)
@@ -188,7 +188,7 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
             std::string path = pathobj.string();
             std::string filename = pathobj.filename().string();
             std::string format = pathobj.extension().string();
-                     
+            
             if(pathobj.parent_path().filename().string() == "CONVERTED")
             {
                 continue;
@@ -206,7 +206,7 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
             }
             
             xmlfiles++;
-
+            
             std::string lang = extractLanguage(pathobj);
             if(lang.empty())
             {
@@ -216,7 +216,7 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
                 }
                 lang = filename;
             }
-              
+            
             bool res = convertFile(path, outPathMain+"/"+lang);
             if(res)
             {
@@ -241,7 +241,7 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
     printf("Converted  : %d files\n",successconverts);
     printf("Failed     : %d files\n",xmlfiles - successconverts);
     printf("-----------------------\n");
-
+    
     return true;
 }
 
@@ -281,7 +281,7 @@ int main(int argc, const char * argv[])
         verbose = 1;
         printf("VERBOSE MODE\n");
     }
-        
+    
     if(strcmp(argv[1+verbose], "-dir") == 0)
     {
         const char* inDirPath = argv[2+verbose];
@@ -299,7 +299,7 @@ int main(int argc, const char * argv[])
     {
         printf("File conversion failed, try -v or --verbose\n");
     }
-
+    
     return 0;
 }
 
