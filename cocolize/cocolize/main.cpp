@@ -155,19 +155,15 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
         outPathMain = std::string(outDirPath);
     }
     
-    bool dir = mkdir(outPathMain.c_str(), 0777);
+    int dir = mkdir(outPathMain.c_str(), 0777);
     
-    if(dir)
-    {
-        printf("Successfully created output dir = [%s]\n",outPathMain.c_str());
-    }
-    else
+    if(dir == -1 && errno != EEXIST)
     {
         if(verbose)
         {
-            printf("Failed creating dir at = [%s]\n",outPathMain.c_str());
+            printf("Failed creating dir at = [%s] \n reason: [%s]",outPathMain.c_str(),strerror(errno));
         }
-        return false;
+        return false;;
     }
     
     
@@ -191,6 +187,11 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
             std::string format = pathobj.extension().string();
             
             if(pathobj.parent_path().filename().string() == "CONVERTED")
+            {
+                continue;
+            }
+            
+            if(pathobj.parent_path().parent_path().filename().string() == "CONVERTED")
             {
                 continue;
             }
@@ -228,26 +229,19 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
 
             
             
+            std::string projpath = outPathMain + "/" + lang + ".lproj/";
+            int dir2 = mkdir(projpath.c_str(), 0777);
             
-            bool dir2 = mkdir((outPathMain+"/"+lang+".lproj/").c_str(), 0777);
-            
-            if(dir2)
+            if( dir2 == -1 && errno != EEXIST)
             {
                 if(verbose)
                 {
-                    printf("Successfully created dir = [%s]\n",(outPathMain+"/"+lang+".lproj/").c_str());
+                    printf("Failed creating dir at = [%s]\n",projpath.c_str());
                 }
+                continue;
             }
-            else
-            {
-                if(verbose)
-                {
-                    printf("Failed creating dir at = [%s]\n",(outPathMain+"/"+lang+".lproj/").c_str());
-                }
-                continue;;
-            }
-            
-            bool res = convertFile(path, outPathMain+"/"+lang+".lproj/"+"Localizable.strings");
+        
+            bool res = convertFile(path, projpath + "Localizable.strings" );
             if(res)
             {
                 successconverts++;
