@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <filesystem>
 #include <sys/stat.h>
+#include <chrono>
 #include "tinyxml.h"
 
 int verbose = 0;
@@ -282,24 +283,31 @@ int main(int argc, const char * argv[])
         printf("VERBOSE MODE\n");
     }
     
+    auto start = std::chrono::steady_clock::now();
     if(strcmp(argv[1+verbose], "-dir") == 0)
     {
         const char* inDirPath = argv[2+verbose];
         const char* outDirPath = argv[3+verbose];
+        
         if(!dirRoutine(inDirPath, outDirPath))
         {
             printf("Dir conversion failed, try -v or --verbose\n");
         }
-        return 0;
     }
-    
-    const char* inFilePath  = argv[1+verbose];
-    const char* outFilePath = argv[2+verbose];
-    if(!convertFile(inFilePath, outFilePath))
+    else
     {
-        printf("File conversion failed, try -v or --verbose\n");
+        const char* inFilePath  = argv[1+verbose];
+        const char* outFilePath = argv[2+verbose];
+        if(!convertFile(inFilePath, outFilePath))
+        {
+            printf("File conversion failed, try -v or --verbose\n");
+        }
     }
     
+    auto stop = std::chrono::steady_clock::now();
+    
+    std::chrono::duration<double,std::milli> msec = stop - start;
+    printf("Elapsed time = %f seconds\n", msec.count() / 1000 );
     return 0;
 }
 
