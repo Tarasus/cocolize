@@ -218,7 +218,36 @@ bool dirRoutine(const char* inDirPath, const char* outDirPath)
                 lang = filename;
             }
             
-            bool res = convertFile(path, outPathMain+"/"+lang);
+            if(lang == "iw") {lang = "he";}
+            if(lang == "zh-rCN") {lang = "zh-Hans";}
+            if(lang == "zh-rTW") {lang = "zh-Hant";}
+            if(lang == "b+sr+Cyrl") {lang = "sr";}
+            if(lang == "b+sr+Latn") {lang = "sr-Latn";}
+            if(lang == "pt") {lang = "pt-PT";}
+            if(lang == "in") {lang = "id";}
+
+            
+            
+            
+            bool dir2 = mkdir((outPathMain+"/"+lang+".lproj/").c_str(), 0777);
+            
+            if(dir2)
+            {
+                if(verbose)
+                {
+                    printf("Successfully created dir = [%s]\n",(outPathMain+"/"+lang+".lproj/").c_str());
+                }
+            }
+            else
+            {
+                if(verbose)
+                {
+                    printf("Failed creating dir at = [%s]\n",(outPathMain+"/"+lang+".lproj/").c_str());
+                }
+                continue;;
+            }
+            
+            bool res = convertFile(path, outPathMain+"/"+lang+".lproj/"+"Localizable.strings");
             if(res)
             {
                 successconverts++;
