@@ -90,7 +90,6 @@
 		524BB99415C8109F00C7180E /* ReaderTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReaderTests.h; sourceTree = "<group>"; };
 		524BB99515C8109F00C7180E /* ReaderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReaderTests.m; sourceTree = "<group>"; };
 		524BB9A515C81D5E00C7180E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = en; path = en.lproj/strings.xml; sourceTree = "<group>"; };
-		524BB9A815C81DD600C7180E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = fr; path = fr.lproj/strings.xml; sourceTree = "<group>"; };
 		52C824CB15FF2B5200824CDA /* printf-args.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "printf-args.c"; sourceTree = "<group>"; };
 		52C824CC15FF2B5200824CDA /* printf-args.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "printf-args.h"; sourceTree = "<group>"; };
 		52C824CD15FF2B5200824CDA /* printf-parse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "printf-parse.c"; sourceTree = "<group>"; };
@@ -301,6 +300,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 524BB93115C7E32100C7180E;
@@ -370,7 +370,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				524BB9A515C81D5E00C7180E /* en */,
-				524BB9A815C81DD600C7180E /* fr */,
 			);
 			name = strings.xml;
 			sourceTree = "<group>";
@@ -401,7 +400,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../tinyxml;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 12.2;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -428,7 +427,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../tinyxml;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 12.2;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -436,6 +435,7 @@
 		524BB94715C7E32100C7180E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 12.2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -443,6 +443,7 @@
 		524BB94815C7E32100C7180E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 12.2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
